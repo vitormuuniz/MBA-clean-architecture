@@ -1,1 +1,1 @@
-# MBA-hexagonal-architecture [![Java CI with Gradle](https://github.com/vitormuuniz/MBA-hexagonal-architecture/actions/workflows/gradle.yml/badge.svg)](https://github.com/vitormuuniz/MBA-hexagonal-architecture/actions/workflows/gradle.yml)
+# MBA-clean-architecture [![Java CI with Gradle](https://github.com/vitormuuniz/MBA-clean-architecture/actions/workflows/gradle.yml/badge.svg)](https://github.com/vitormuuniz/MBA-clean-architecture/actions/workflows/gradle.yml)
