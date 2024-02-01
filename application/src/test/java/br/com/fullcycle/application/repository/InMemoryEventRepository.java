@@ -1,0 +1,40 @@
+package br.com.fullcycle.application.repository;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+
+import br.com.fullcycle.domain.event.Event;
+import br.com.fullcycle.domain.event.EventId;
+import br.com.fullcycle.domain.event.EventRepository;
+public class InMemoryEventRepository implements EventRepository {
+
+    private final Map<String, Event> events;
+
+    public InMemoryEventRepository() {
+        this.events = new HashMap<>();
+    }
+
+    @Override
+    public Optional<Event> eventOfId(EventId eventId) {
+        return Optional.ofNullable(this.events.get(Objects.requireNonNull(eventId).value()));
+    }
+
+    @Override
+    public Event create(Event event) {
+        this.events.put(event.eventId().value(), event);
+        return event;
+    }
+
+    @Override
+    public Event update(Event event) {
+        this.events.put(event.eventId().value(), event);
+        return event;
+    }
+
+    @Override
+    public void deleteAll() {
+        this.events.clear();
+    }
+}
