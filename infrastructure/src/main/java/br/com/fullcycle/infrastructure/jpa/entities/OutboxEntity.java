@@ -17,7 +17,7 @@ public class OutboxEntity {
     @Id
     private UUID id;
 
-    @Column(length = 300)
+    @Column(columnDefinition = "JSON", length = 4000)
     private String content;
 
     private boolean published;
@@ -74,5 +74,10 @@ public class OutboxEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public OutboxEntity notePublished() {
+        this.published = true;
+        return this;
     }
 }
