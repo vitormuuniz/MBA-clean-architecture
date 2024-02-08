@@ -16,9 +16,7 @@ import br.com.fullcycle.domain.customer.CustomerRepository;
 import br.com.fullcycle.domain.event.Event;
 import br.com.fullcycle.domain.event.EventId;
 import br.com.fullcycle.domain.event.EventRepository;
-import br.com.fullcycle.domain.event.ticket.Ticket;
 import br.com.fullcycle.domain.event.ticket.TicketRepository;
-import br.com.fullcycle.domain.event.ticket.TicketStatus;
 import br.com.fullcycle.domain.exceptions.ValidationException;
 import br.com.fullcycle.domain.partner.Partner;
 import br.com.fullcycle.domain.partner.PartnerRepository;
@@ -66,7 +64,6 @@ class SubscribeCustomerToEventUseCaseTestIT extends IntegrationTest {
         //then
         assertEquals(expectedEventId, actualResponse.eventId());
         assertNotNull(actualResponse.reservationDate());
-        assertEquals(TicketStatus.PENDING.name(), actualResponse.ticketStatus());
     }
 
     @Test
@@ -119,7 +116,7 @@ class SubscribeCustomerToEventUseCaseTestIT extends IntegrationTest {
         final var anEvent = Event.newEvent("Disney on Ice", "2021-01-01", 10, aPartner);
         final var eventId = anEvent.eventId().value();
 
-        createTicket(anEvent.reserveTicket(aCustomer.customerId()));
+        anEvent.reserveTicket(aCustomer.customerId());
 
         eventRepository.create(anEvent);
 
@@ -163,10 +160,6 @@ class SubscribeCustomerToEventUseCaseTestIT extends IntegrationTest {
 
     private Event createEvent(String name, String date, Integer totalSpots, Partner partner) {
         return eventRepository.create(Event.newEvent(name, date, totalSpots, partner));
-    }
-
-    private void createTicket(Ticket ticket) {
-        ticketRepository.create(ticket);
     }
 
     private Partner createPartner(String cnpj, String email, String name) {

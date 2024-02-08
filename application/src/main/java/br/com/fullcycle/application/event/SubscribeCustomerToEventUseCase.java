@@ -8,23 +8,19 @@ import br.com.fullcycle.domain.customer.CustomerId;
 import br.com.fullcycle.domain.customer.CustomerRepository;
 import br.com.fullcycle.domain.event.EventId;
 import br.com.fullcycle.domain.event.EventRepository;
-import br.com.fullcycle.domain.event.ticket.Ticket;
-import br.com.fullcycle.domain.event.ticket.TicketRepository;
+import br.com.fullcycle.domain.event.EventTicket;
 import br.com.fullcycle.domain.exceptions.ValidationException;
 
 public class SubscribeCustomerToEventUseCase extends UseCase<SubscribeCustomerToEventUseCase.Input, SubscribeCustomerToEventUseCase.Output> {
 
     private final EventRepository eventRepository;
     private final CustomerRepository customerRepository;
-    private final TicketRepository ticketRepository;
 
     public SubscribeCustomerToEventUseCase(
             final EventRepository eventRepository,
-            final CustomerRepository customerRepository,
-            final TicketRepository ticketRepository) {
+            final CustomerRepository customerRepository) {
         this.eventRepository = Objects.requireNonNull(eventRepository);
         this.customerRepository = Objects.requireNonNull(customerRepository);
-        this.ticketRepository = Objects.requireNonNull(ticketRepository);
     }
 
     @Override
@@ -35,14 +31,13 @@ public class SubscribeCustomerToEventUseCase extends UseCase<SubscribeCustomerTo
         var event = eventRepository.eventOfId(EventId.with(input.eventId))
                                 .orElseThrow(() -> new ValidationException("Event not found"));
 
-        final Ticket ticket = event.reserveTicket(customer.customerId());
+        final EventTicket ticket = event.reserveTicket(customer.customerId());
 
-        ticketRepository.create(ticket);
-        eventRepository.create(event);
+        eventRepository.update(event);
 
-        return new Output(event.eventId().value(), ticket.ticketId().value(), ticket.status().name(), ticket.reservedAt());
+        return new Output(event.eventId().value(), ticket.eventTicketId().value(), Instant.now());
     }
 
     public record Input(String eventId, String customerId) {}
-    public record Output(String eventId, String ticketId, String ticketStatus, Instant reservationDate) {}
+    public record Output(String eventId, String eventTicketId, Instant reservationDate) {}
 }

@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import br.com.fullcycle.domain.customer.Customer;
 import br.com.fullcycle.domain.exceptions.ValidationException;
 import br.com.fullcycle.domain.partner.Partner;
-import br.com.fullcycle.domain.event.ticket.TicketStatus;
 
 public class EventTest {
 
@@ -100,7 +99,7 @@ public class EventTest {
         final var expectedTotalSpots = 10;
         final var expectedTickets = 1;
         final var expectedTicketOrder = 1;
-        final var expectedTicketStatus = TicketStatus.PENDING;
+        final var expectedDomainEvent = "event-ticket.reserved";
 
         final var aPartner = Partner.newPartner("John Doe", "41.536.538/0001-00", "john-doe@gmail.com");
         final var expectedPartnerId = aPartner.partnerId();
@@ -115,12 +114,10 @@ public class EventTest {
         final var actualTicket = anEvent.reserveTicket(aCustomer.customerId());
 
         //then
-        assertNotNull(actualTicket.ticketId());
-        assertNotNull(actualTicket.reservedAt());
-        assertNull(actualTicket.paidAt());
+        assertNull(actualTicket.ticketId());
+        assertNotNull(actualTicket.eventTicketId());
         assertEquals(expectedCustomerId, actualTicket.customerId());
         assertEquals(expectedEventId, actualTicket.eventId());
-        assertEquals(expectedTicketStatus, actualTicket.status());
 
         assertEquals(expectedDate, anEvent.date().format(DateTimeFormatter.ISO_LOCAL_DATE));
         assertEquals(expectedName, anEvent.name().value());
@@ -133,6 +130,9 @@ public class EventTest {
         assertEquals(expectedTicketOrder, actualEventTicket.ordering());
         assertEquals(expectedCustomerId, actualEventTicket.customerId());
         assertEquals(expectedEventId, actualEventTicket.eventId());
+
+        final var actualDomainEvents = anEvent.allDomainEvents().iterator().next();
+        assertEquals(expectedDomainEvent, actualDomainEvents.type());
     }
 
     @Test
